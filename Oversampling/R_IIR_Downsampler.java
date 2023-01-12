@@ -8,36 +8,45 @@
 */
 package com.r_ware.r_openlib.r_oversampling;
 
-public class R_IIR_Oversampler implements R_IOversampler
+public class R_IIR_Downsampler implements R_IDownsampler
 {
-    public R_IIR_Oversampler( double baseSampleRate, int factor, double freq )
+    public R_IIR_Downsampler( double baseSampleRate, int factor, double freq )
     {
         // at least two and then in powers of two
         m_osFactor      = Math.max( 2, factor & ~0x1 );
         m_sampleRate    = baseSampleRate * m_osFactor;
-        m_upSampler     = new R_ResStackedResampleFilter( m_sampleRate, freq );
         m_downSampler   = new R_ResStackedResampleFilter( m_sampleRate, freq );
     }
 
-    public double process( double value, R_IOversampledProcessor processor )
+    public double process( double[] values )
     {
-        double[] os = new double[m_osFactor];
-        os[0] = value; // first value is valid, others are zero-stuffed
-
-        //////// OVERSAMPLING
+        //////// DOWNSAMPLING
         for( int i = 0; i < m_osFactor; ++i )
         {
-            os[i] = m_upSampler.process( os[i] );
-            os[i] = processor.process( m_osFactor * os[i] );
-            os[i] = m_downSampler.process( os[i] );
+            values[i] = m_downSampler.process( values[i] );
         }
-        //////// OVERSAMPLING
+        //////// DOWNSAMPLING
 
-        return os[0];
+        return values[0];
+    }
+
+    public double process( R_IValueGenerator valueGen )
+    {
+        double value;
+        //////// DOWNSAMPLING
+        value = valueGen.getValue();
+        value = m_downSampler.process( value );
+
+        for( int i = 1; i < m_osFactor; ++i )
+        {
+            m_downSampler.process( valueGen.getValue() );
+        }
+        //////// DOWNSAMPLING
+
+        return value;
     }
 
     private double                      m_sampleRate;
     private int                         m_osFactor;
-    private R_ResStackedResampleFilter  m_upSampler;
     private R_ResStackedResampleFilter  m_downSampler;
 }

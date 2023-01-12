@@ -1,4 +1,4 @@
-package com.r_ware.r_openlib.oshardcliptemplate;
+package com.r_ware.r_openlib.oversampledoscillatorexample;
 
 
 import voltage.controllers.*;
@@ -15,51 +15,30 @@ import com.r_ware.r_openlib.r_oversampling.*;
 //[/user-imports]
 
 
-public class OSHardclipTemplate extends VoltageModule
+public class OversampledOscillatorExample extends VoltageModule
 //[user-inheritance]
 //[/user-inheritance]
 {
 
-    public OSHardclipTemplate( long moduleID, VoltageObjects voltageObjects )
+    public OversampledOscillatorExample( long moduleID, VoltageObjects voltageObjects )
     {
-        super( moduleID, voltageObjects, "OS HARDCLIP TEMPLATE", ModuleType.ModuleType_Utility, 1.2 );
+        super( moduleID, voltageObjects, "Oversampled Oscillator Example", ModuleType.ModuleType_Oscillators, 1.2 );
 
         InitializeControls();
 
 
         canBeBypassed = false;
-        SetSkin( "513e17396d294969b28cf96b01d39e3c" );
+        SetSkin( "de53e8a919b5483282c7cb5595e576af" );
     }
 
 void InitializeControls()
 {
 
-        in = new VoltageAudioJack( "in", "IN", this, JackType.JackType_AudioInput );
-        AddComponent( in );
-        in.SetWantsMouseNotifications( false );
-        in.SetPosition( 22, 252 );
-        in.SetSize( 37, 37 );
-        in.SetSkin( "Jack Straight" );
-
-        out = new VoltageAudioJack( "out", "OUT", this, JackType.JackType_AudioOutput );
-        AddComponent( out );
-        out.SetWantsMouseNotifications( false );
-        out.SetPosition( 25, 316 );
-        out.SetSize( 37, 37 );
-        out.SetSkin( "Jack Straight" );
-
-        osFactorSwitch = new VoltageSwitch( "osFactorSwitch", "Oversampling Factor", this, 0 );
-        AddComponent( osFactorSwitch );
-        osFactorSwitch.SetWantsMouseNotifications( false );
-        osFactorSwitch.SetPosition( 15, 102 );
-        osFactorSwitch.SetSize( 63, 15 );
-        osFactorSwitch.SetSkin( "5-State Slide Horizontal" );
-
-        textLabel1 = new VoltageLabel( "textLabel1", "textLabel1", this, "OS FACTOR" );
+        textLabel1 = new VoltageLabel( "textLabel1", "textLabel1", this, "OVERSAMPLED OSCILLATOR EXAMPLE" );
         AddComponent( textLabel1 );
         textLabel1.SetWantsMouseNotifications( false );
-        textLabel1.SetPosition( 2, 72 );
-        textLabel1.SetSize( 80, 30 );
+        textLabel1.SetPosition( 2, 0 );
+        textLabel1.SetSize( 82, 61 );
         textLabel1.SetEditable( false, false );
         textLabel1.SetJustificationFlags( VoltageLabel.Justification.HorizCentered );
         textLabel1.SetJustificationFlags( VoltageLabel.Justification.VertCentered );
@@ -74,13 +53,25 @@ void InitializeControls()
         textLabel1.SetNumberEditorUsesMouseWheel( false );
         textLabel1.SetHasCustomTextHoverColor( false );
         textLabel1.SetTextHoverColor( new Color( 0, 0, 0, 255 ) );
-        textLabel1.SetFont( "<Sans-Serif>", 14, true, false );
+        textLabel1.SetFont( "Arial", 14, true, false );
 
-        textLabel2 = new VoltageLabel( "textLabel2", "textLabel2", this, "IN" );
+        freqKnob = new VoltageKnob( "freqKnob", "Frequency", this, 20, 2000, 100 );
+        AddComponent( freqKnob );
+        freqKnob.SetWantsMouseNotifications( false );
+        freqKnob.SetPosition( 21, 171 );
+        freqKnob.SetSize( 44, 44 );
+        freqKnob.SetSkin( "Plastic White" );
+        freqKnob.SetRange( 20, 2000, 100, false, 0 );
+        freqKnob.SetKnobParams( 215, 145 );
+        freqKnob.DisplayValueInPercent( false );
+        freqKnob.SetKnobAdjustsRing( true );
+        freqKnob.SetMidpointValue( 400 );
+
+        textLabel2 = new VoltageLabel( "textLabel2", "textLabel2", this, "FREQUENCY" );
         AddComponent( textLabel2 );
         textLabel2.SetWantsMouseNotifications( false );
-        textLabel2.SetPosition( 2, 221 );
-        textLabel2.SetSize( 80, 30 );
+        textLabel2.SetPosition( 2, 152 );
+        textLabel2.SetSize( 82, 18 );
         textLabel2.SetEditable( false, false );
         textLabel2.SetJustificationFlags( VoltageLabel.Justification.HorizCentered );
         textLabel2.SetJustificationFlags( VoltageLabel.Justification.VertCentered );
@@ -95,34 +86,20 @@ void InitializeControls()
         textLabel2.SetNumberEditorUsesMouseWheel( false );
         textLabel2.SetHasCustomTextHoverColor( false );
         textLabel2.SetTextHoverColor( new Color( 0, 0, 0, 255 ) );
-        textLabel2.SetFont( "<Sans-Serif>", 14, true, false );
+        textLabel2.SetFont( "Arial", 12, true, false );
 
-        textLabel5 = new VoltageLabel( "textLabel5", "textLabel5", this, "DRIVE" );
-        AddComponent( textLabel5 );
-        textLabel5.SetWantsMouseNotifications( false );
-        textLabel5.SetPosition( 3, 159 );
-        textLabel5.SetSize( 80, 30 );
-        textLabel5.SetEditable( false, false );
-        textLabel5.SetJustificationFlags( VoltageLabel.Justification.HorizCentered );
-        textLabel5.SetJustificationFlags( VoltageLabel.Justification.VertCentered );
-        textLabel5.SetColor( new Color( 255, 255, 255, 255 ) );
-        textLabel5.SetBkColor( new Color( 65, 65, 65, 0 ) );
-        textLabel5.SetBorderColor( new Color( 0, 0, 0, 0 ) );
-        textLabel5.SetBorderSize( 1 );
-        textLabel5.SetMultiLineEdit( false );
-        textLabel5.SetIsNumberEditor( false );
-        textLabel5.SetNumberEditorRange( 0, 100 );
-        textLabel5.SetNumberEditorInterval( 1 );
-        textLabel5.SetNumberEditorUsesMouseWheel( false );
-        textLabel5.SetHasCustomTextHoverColor( false );
-        textLabel5.SetTextHoverColor( new Color( 0, 0, 0, 255 ) );
-        textLabel5.SetFont( "<Sans-Serif>", 14, true, false );
+        osFactorSwitch = new VoltageSwitch( "osFactorSwitch", "Oversampling Factor", this, 0 );
+        AddComponent( osFactorSwitch );
+        osFactorSwitch.SetWantsMouseNotifications( false );
+        osFactorSwitch.SetPosition( 12, 102 );
+        osFactorSwitch.SetSize( 63, 15 );
+        osFactorSwitch.SetSkin( "5-State Slide Horizontal" );
 
-        textLabel3 = new VoltageLabel( "textLabel3", "textLabel3", this, "OVER SAMPLING HARDCLIP TEMPLATE" );
+        textLabel3 = new VoltageLabel( "textLabel3", "textLabel3", this, "OVERSAMPLING FACTOR" );
         AddComponent( textLabel3 );
         textLabel3.SetWantsMouseNotifications( false );
-        textLabel3.SetPosition( 3, 0 );
-        textLabel3.SetSize( 80, 62 );
+        textLabel3.SetPosition( 2, 73 );
+        textLabel3.SetSize( 82, 29 );
         textLabel3.SetEditable( false, false );
         textLabel3.SetJustificationFlags( VoltageLabel.Justification.HorizCentered );
         textLabel3.SetJustificationFlags( VoltageLabel.Justification.VertCentered );
@@ -130,20 +107,27 @@ void InitializeControls()
         textLabel3.SetBkColor( new Color( 65, 65, 65, 0 ) );
         textLabel3.SetBorderColor( new Color( 0, 0, 0, 0 ) );
         textLabel3.SetBorderSize( 1 );
-        textLabel3.SetMultiLineEdit( true );
+        textLabel3.SetMultiLineEdit( false );
         textLabel3.SetIsNumberEditor( false );
         textLabel3.SetNumberEditorRange( 0, 100 );
         textLabel3.SetNumberEditorInterval( 1 );
         textLabel3.SetNumberEditorUsesMouseWheel( false );
         textLabel3.SetHasCustomTextHoverColor( false );
         textLabel3.SetTextHoverColor( new Color( 0, 0, 0, 255 ) );
-        textLabel3.SetFont( "Arial", 14, true, false );
+        textLabel3.SetFont( "Arial", 12, true, false );
 
-        textLabel4 = new VoltageLabel( "textLabel4", "textLabel4", this, "OUT" );
+        waveformSelectionSwitch = new VoltageSwitch( "waveformSelectionSwitch", "Waveform Selection", this, 0 );
+        AddComponent( waveformSelectionSwitch );
+        waveformSelectionSwitch.SetWantsMouseNotifications( false );
+        waveformSelectionSwitch.SetPosition( 29, 259 );
+        waveformSelectionSwitch.SetSize( 27, 15 );
+        waveformSelectionSwitch.SetSkin( "2-State Slide Bright Horizontal" );
+
+        textLabel4 = new VoltageLabel( "textLabel4", "textLabel4", this, "WAVEFORM" );
         AddComponent( textLabel4 );
         textLabel4.SetWantsMouseNotifications( false );
-        textLabel4.SetPosition( 2, 291 );
-        textLabel4.SetSize( 80, 30 );
+        textLabel4.SetPosition( 2, 236 );
+        textLabel4.SetSize( 82, 18 );
         textLabel4.SetEditable( false, false );
         textLabel4.SetJustificationFlags( VoltageLabel.Justification.HorizCentered );
         textLabel4.SetJustificationFlags( VoltageLabel.Justification.VertCentered );
@@ -158,18 +142,35 @@ void InitializeControls()
         textLabel4.SetNumberEditorUsesMouseWheel( false );
         textLabel4.SetHasCustomTextHoverColor( false );
         textLabel4.SetTextHoverColor( new Color( 0, 0, 0, 255 ) );
-        textLabel4.SetFont( "<Sans-Serif>", 14, true, false );
+        textLabel4.SetFont( "Arial", 12, true, false );
 
-        driveKnob = new VoltageKnob( "driveKnob", "Drive", this, 1.0, 8, 1.0 );
-        AddComponent( driveKnob );
-        driveKnob.SetWantsMouseNotifications( false );
-        driveKnob.SetPosition( 29, 188 );
-        driveKnob.SetSize( 27, 27 );
-        driveKnob.SetSkin( "Plastic White" );
-        driveKnob.SetRange( 1.0, 8, 1.0, false, 0 );
-        driveKnob.SetKnobParams( 215, 145 );
-        driveKnob.DisplayValueInPercent( false );
-        driveKnob.SetKnobAdjustsRing( true );
+        textLabel5 = new VoltageLabel( "textLabel5", "textLabel5", this, "OUT" );
+        AddComponent( textLabel5 );
+        textLabel5.SetWantsMouseNotifications( false );
+        textLabel5.SetPosition( 2, 300 );
+        textLabel5.SetSize( 82, 18 );
+        textLabel5.SetEditable( false, false );
+        textLabel5.SetJustificationFlags( VoltageLabel.Justification.HorizCentered );
+        textLabel5.SetJustificationFlags( VoltageLabel.Justification.VertCentered );
+        textLabel5.SetColor( new Color( 255, 255, 255, 255 ) );
+        textLabel5.SetBkColor( new Color( 65, 65, 65, 0 ) );
+        textLabel5.SetBorderColor( new Color( 0, 0, 0, 0 ) );
+        textLabel5.SetBorderSize( 1 );
+        textLabel5.SetMultiLineEdit( false );
+        textLabel5.SetIsNumberEditor( false );
+        textLabel5.SetNumberEditorRange( 0, 100 );
+        textLabel5.SetNumberEditorInterval( 1 );
+        textLabel5.SetNumberEditorUsesMouseWheel( false );
+        textLabel5.SetHasCustomTextHoverColor( false );
+        textLabel5.SetTextHoverColor( new Color( 0, 0, 0, 255 ) );
+        textLabel5.SetFont( "Arial", 12, true, false );
+
+        out = new VoltageAudioJack( "out", "OUT", this, JackType.JackType_AudioOutput );
+        AddComponent( out );
+        out.SetWantsMouseNotifications( false );
+        out.SetPosition( 22, 317 );
+        out.SetSize( 37, 37 );
+        out.SetSkin( "Jack Straight" );
 }
 
 
@@ -185,10 +186,10 @@ void InitializeControls()
     {
         //[user-Initialize]   Add your own initialization code here
 
+        m_frequency     = new SmoothValue();
+        m_oscillator    = new BadOscillator( Values.SampleRate );
+        m_downsampler   = new R_NO_Downsampler();
 
-        m_drive         = new SmoothValue();
-        m_processor     = new HardClipProcessor();
-        m_oversampler   = new R_IIR_Oversampler( Values.SampleRate, 2, 20e3 );
 
         //[/user-Initialize]
     }
@@ -225,9 +226,9 @@ void InitializeControls()
         {
             case Knob_Changed:   // doubleValue is the new VoltageKnob value
             {
-                if( component == driveKnob )
+                if( component == freqKnob )
                 {
-                    m_drive.SetValue( doubleValue );
+                    m_frequency.SetValue( doubleValue );
                     return true;
                 }
             }
@@ -250,21 +251,43 @@ void InitializeControls()
                     switch( (int)doubleValue )
                     {
                         case 0:
-                            m_oversampler = new R_NO_Oversampler( Values.SampleRate, 0 );
+                            m_osFactor = 1;
                             break;
                         case 1:
-                            m_oversampler = new R_IIR_Oversampler( Values.SampleRate, 2, 20e3 );
+                            m_osFactor = 2;
                             break;
                         case 2:
-                            m_oversampler = new R_IIR_Oversampler( Values.SampleRate, 4, 20e3 );
+                            m_osFactor = 4;
                             break;
                         case 3:
-                            m_oversampler = new R_IIR_Oversampler( Values.SampleRate, 8, 20e3 );
+                            m_osFactor = 8;
                             break;
                         case 4:
-                            m_oversampler = new R_IIR_Oversampler( Values.SampleRate, 16, 20e3 );
+                            m_osFactor = 16;
                             break;
                     }
+
+                    m_oscillator.setSampleRate( m_osFactor * Values.SampleRate );
+
+                    if( m_osFactor == 1 )
+                    {
+                        m_downsampler   = new R_NO_Downsampler();
+                    }
+                    else
+                    {
+                        m_downsampler   = new R_IIR_Downsampler(
+                                Values.SampleRate,
+                                m_osFactor,
+                                20e3
+                                );
+                    }
+                    return true;
+                }
+
+                if( component == waveformSelectionSwitch )
+                {
+                    m_isSaw = doubleValue > 0.5;
+                    m_oscillator.setToSaw( m_isSaw );
                     return true;
                 }
             }
@@ -467,13 +490,34 @@ void InitializeControls()
     public void ProcessSample()
     {
         //[user-ProcessSample]   Add your own process-sampling code here
-        double value = 0.2 * in.GetValue();
+        double[] values = new double[ m_osFactor ];
+        double outputValue = 0.0;
 
-        value *= m_drive.GetSmoothValue();
+        m_oscillator.setFrequency( m_frequency.GetSmoothValue() );
+        outputValue = m_downsampler.process( m_oscillator );
 
-        value = m_oversampler.process( value, m_processor );
+        /* ALTERNATIVE
+        if( m_isSaw )
+        {
+            for( int i = 0; i < m_osFactor; ++i )
+            {
+                m_oscillator.advance();
+                values[i] = m_oscillator.getSawValue();
+            }
+        }
+        else
+        {
+            for( int i = 0; i < m_osFactor; ++i )
+            {
+                m_oscillator.advance();
+                values[i] = m_oscillator.getSquareValue();
+            }
+        }
 
-        out.SetValue( 5.0 * value );
+        outputValue = m_downsampler.process( values );
+        ALTERNATIVE */
+
+        out.SetValue( 5.0 * outputValue );
 
         //[/user-ProcessSample]
     }
@@ -491,22 +535,6 @@ void InitializeControls()
     {
         //[user-GetTooltipText]   Add your own code here
 
-        if( component == osFactorSwitch )
-        {
-            switch( (int)osFactorSwitch.GetValue() )
-            {
-                case 0:
-                    return "NO Oversampling";
-                case 1:
-                    return "2x Oversampling";
-                case 2:
-                    return "4x Oversampling";
-                case 3:
-                    return "8x Oversampling";
-                case 4:
-                    return "16x Oversampling";
-            }
-        }
 
 
         return super.GetTooltipText( component );
@@ -624,33 +652,91 @@ void InitializeControls()
 
 
     // Auto-generated variables
-    private VoltageKnob driveKnob;
-    private VoltageLabel textLabel4;
-    private VoltageLabel textLabel3;
-    private VoltageLabel textLabel5;
-    private VoltageLabel textLabel2;
-    private VoltageLabel textLabel1;
-    private VoltageSwitch osFactorSwitch;
     private VoltageAudioJack out;
-    private VoltageAudioJack in;
+    private VoltageLabel textLabel5;
+    private VoltageLabel textLabel4;
+    private VoltageSwitch waveformSelectionSwitch;
+    private VoltageLabel textLabel3;
+    private VoltageSwitch osFactorSwitch;
+    private VoltageLabel textLabel2;
+    private VoltageKnob freqKnob;
+    private VoltageLabel textLabel1;
 
 
     //[user-code-and-variables]    Add your own variables and functions here
-    private class HardClipProcessor implements R_IOversampledProcessor
+    private class BadOscillator implements R_IValueGenerator
     {
-        public HardClipProcessor()
+        //THIS IS A BAD OSCILLATOR IMPLEMENTATION INTENTIONALLY USED TO SHOWCASE
+        //OVERSAMPLED OSCILLATOR!
+        //DO NOT USE IN ACTUAL MODULES!
+        public BadOscillator( double sampleRate )
         {
+            m_sampleRate        = sampleRate;
+            m_sampleRateRecip   = 1.0 / m_sampleRate;
+            m_phase             = 0.0;
         }
 
-        public double process( double value )
+        public void setSampleRate( double sampleRate )
         {
-            return 0.5 * ( Math.abs( value + 1 ) - Math.abs( value - 1 ) );
+            m_phi               *= m_sampleRate; // convert back to frequency
+            m_sampleRate        = sampleRate;
+            m_sampleRateRecip   = 1.0 / m_sampleRate;
+            m_phi               *= m_sampleRateRecip; //new phase accumulator increment
         }
+
+        public void setFrequency( double frequency )
+        {
+            //only positive frequencies supported
+            m_phi   = frequency * m_sampleRateRecip;
+        }
+
+        public void setToSaw( boolean isSaw )
+        {
+            m_isSaw = isSaw;
+        }
+
+        public void advance()
+        {
+            // these naive implementations will alias badly
+            m_sawValue = 2.0 * m_phase - 1.0;
+            m_squareValue = Math.signum( m_sawValue );
+
+            //accumulate phase
+            m_phase += m_phi;
+            //wrap phase in range 0..1
+            m_phase -= (int)m_phase;
+        }
+
+        public double getSawValue()
+        {
+            return m_sawValue;
+        }
+
+        public double getSquareValue()
+        {
+            return m_squareValue;
+        }
+
+        public double getValue()
+        {
+            advance();
+            return m_isSaw ? getSawValue() : getSquareValue();
+        }
+
+        private double  m_sampleRate;
+        private double  m_sampleRateRecip;
+        private double  m_phase;
+        private double  m_phi;
+        private double  m_sawValue;
+        private double  m_squareValue;
+        private boolean m_isSaw;
     }
 
-    private SmoothValue         m_drive;
-    private HardClipProcessor   m_processor;
-    private R_IOversampler      m_oversampler;
+    private int                 m_osFactor;
+    private boolean             m_isSaw;
+    private SmoothValue         m_frequency;
+    private BadOscillator       m_oscillator;
+    private R_IDownsampler      m_downsampler;
     //[/user-code-and-variables]
 }
 
