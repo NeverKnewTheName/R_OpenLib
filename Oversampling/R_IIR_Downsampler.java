@@ -21,9 +21,10 @@ public class R_IIR_Downsampler implements R_IDownsampler
     public double process( double[] values )
     {
         //////// DOWNSAMPLING
-        for( int i = 0; i < m_osFactor; ++i )
+        values[0] = m_downSampler.process( values[0] );
+        for( int i = 1; i < m_osFactor; ++i )
         {
-            values[i] = m_downSampler.process( values[i] );
+            m_downSampler.process( values[i] );
         }
         //////// DOWNSAMPLING
 
@@ -33,9 +34,9 @@ public class R_IIR_Downsampler implements R_IDownsampler
     public double process( R_IValueGenerator valueGen )
     {
         double value;
+
         //////// DOWNSAMPLING
-        value = valueGen.getValue();
-        value = m_downSampler.process( value );
+        value = m_downSampler.process( valueGen.getValue() );
 
         for( int i = 1; i < m_osFactor; ++i )
         {

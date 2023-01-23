@@ -21,19 +21,22 @@ public class R_IIR_Oversampler implements R_IOversampler
 
     public double process( double value, R_IOversampledProcessor processor )
     {
-        double[] os = new double[m_osFactor];
-        os[0] = value; // first value is valid, others are zero-stuffed
+        value = m_downSampler.process(
+                processor.process(
+                    m_osFactor * m_upSampler.process( value )
+                    )
+                );
 
-        //////// OVERSAMPLING
-        for( int i = 0; i < m_osFactor; ++i )
+        for( int i = 1; i < m_osFactor; ++i )
         {
-            os[i] = m_upSampler.process( os[i] );
-            os[i] = processor.process( m_osFactor * os[i] );
-            os[i] = m_downSampler.process( os[i] );
+            m_downSampler.process(
+                    processor.process(
+                        m_osFactor * m_upSampler.process( 0.0 )
+                        )
+                    );
         }
-        //////// OVERSAMPLING
 
-        return os[0];
+        return value;
     }
 
     private double                      m_sampleRate;

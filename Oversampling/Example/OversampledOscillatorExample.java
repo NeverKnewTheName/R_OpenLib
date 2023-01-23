@@ -28,7 +28,7 @@ public class OversampledOscillatorExample extends VoltageModule
 
 
         canBeBypassed = false;
-        SetSkin( "de53e8a919b5483282c7cb5595e576af" );
+        SetSkin( "8f71085c2fb8407699c6d82758224ce1" );
     }
 
 void InitializeControls()
