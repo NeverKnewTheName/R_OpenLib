@@ -8,32 +8,32 @@
 */
 package com.r_ware.r_openlib.r_oversampling;
 
-public class R_IIR_Upsampler implements R_IUpsampler
+public class R_FIR_Buffer
 {
-    public R_IIR_Upsampler( double baseSampleRate, int factor, double freq )
+    public R_FIR_Buffer( int size )
     {
-        // at least two and then in powers of two
-        m_osFactor      = Math.max( 2, factor & ~0x1 );
-        m_sampleRate    = baseSampleRate * m_osFactor;
-        m_upSampler     = new R_ResStackedResampleFilter( m_sampleRate, freq );
+        int binaryExp = (int)Math.ceil( Math.log( size ) / Math.log( 2 ) );
+        m_size      = 1 << binaryExp;
+        m_sizeMask  = m_size - 1;
+        m_buffer    = new double[m_size];
+        m_cntr      = -1;
     }
 
-    public double[] process( double value )
+    public void addValue( double value )
     {
-        double[] os = new double[m_osFactor];
-        os[0] = value; // first value is valid, others are zero-stuffed
-
-        //////// UPSAMPLING
-        for( int i = 0; i < m_osFactor; ++i )
-        {
-            os[i] = m_osFactor * m_upSampler.process( os[i] );
-        }
-        //////// UPSAMPLING
-
-        return os;
+        m_cntr = ( m_cntr + 1 ) & m_sizeMask;
+        m_buffer[m_cntr] = value;
     }
 
-    private double                      m_sampleRate;
-    private int                         m_osFactor;
-    private R_ResStackedResampleFilter  m_upSampler;
+    public double getValue( int index )
+    {
+        index = ( m_cntr - index ) & m_sizeMask;
+        return m_buffer[index];
+    }
+
+    private double[]    m_buffer;
+    private int         m_cntr;
+    private final int   m_size;
+    private final int   m_sizeMask;
 }
+

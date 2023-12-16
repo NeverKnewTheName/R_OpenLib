@@ -8,32 +8,14 @@
 */
 package com.r_ware.r_openlib.r_oversampling;
 
-public class R_IIR_Upsampler implements R_IUpsampler
+public interface R_IFIR_Coeffs
 {
-    public R_IIR_Upsampler( double baseSampleRate, int factor, double freq )
-    {
-        // at least two and then in powers of two
-        m_osFactor      = Math.max( 2, factor & ~0x1 );
-        m_sampleRate    = baseSampleRate * m_osFactor;
-        m_upSampler     = new R_ResStackedResampleFilter( m_sampleRate, freq );
-    }
-
-    public double[] process( double value )
-    {
-        double[] os = new double[m_osFactor];
-        os[0] = value; // first value is valid, others are zero-stuffed
-
-        //////// UPSAMPLING
-        for( int i = 0; i < m_osFactor; ++i )
-        {
-            os[i] = m_osFactor * m_upSampler.process( os[i] );
-        }
-        //////// UPSAMPLING
-
-        return os;
-    }
-
-    private double                      m_sampleRate;
-    private int                         m_osFactor;
-    private R_ResStackedResampleFilter  m_upSampler;
+    /*
+     * must return the oversampling factor for a base samplerate of 48kHz
+     * (internal sample rate of Voltage Modular). so e.g. for FIR coeffs that
+     * upsample to 96khz the OS Factor must be 2.
+    */
+    public int      getOSFactor();
+    public double[] getCoeffs();
 }
+

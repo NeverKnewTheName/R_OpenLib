@@ -8,32 +8,24 @@
 */
 package com.r_ware.r_openlib.r_oversampling;
 
-public class R_IIR_Upsampler implements R_IUpsampler
+public class R_FIR_Coeffs_Kaiser_20_24_100
 {
-    public R_IIR_Upsampler( double baseSampleRate, int factor, double freq )
+    public static final R_IFIR_Coeffs getCoeffs( int osFactor )
     {
-        // at least two and then in powers of two
-        m_osFactor      = Math.max( 2, factor & ~0x1 );
-        m_sampleRate    = baseSampleRate * m_osFactor;
-        m_upSampler     = new R_ResStackedResampleFilter( m_sampleRate, freq );
-    }
-
-    public double[] process( double value )
-    {
-        double[] os = new double[m_osFactor];
-        os[0] = value; // first value is valid, others are zero-stuffed
-
-        //////// UPSAMPLING
-        for( int i = 0; i < m_osFactor; ++i )
+        switch( osFactor )
         {
-            os[i] = m_osFactor * m_upSampler.process( os[i] );
+            default:
+            case 1:
+                return R_FIR_Coeffs_Kaiser_20_24_100_1X.createMe();
+            case 2:
+                return R_FIR_Coeffs_Kaiser_20_24_100_2X.createMe();
+            case 4:
+                return R_FIR_Coeffs_Kaiser_20_24_100_4X.createMe();
+            case 8:
+                return R_FIR_Coeffs_Kaiser_20_24_100_8X.createMe();
+            case 16:
+                return R_FIR_Coeffs_Kaiser_20_24_100_16X.createMe();
         }
-        //////// UPSAMPLING
-
-        return os;
     }
-
-    private double                      m_sampleRate;
-    private int                         m_osFactor;
-    private R_ResStackedResampleFilter  m_upSampler;
 }
+
